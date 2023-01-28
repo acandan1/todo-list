@@ -1,0 +1,127 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+img {
+    mix-blend-mode: multiply;
+}
+
+.container {
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr;
+}
+
+.header {
+    grid-row: 1 / 2;
+    background-color: rgba(131, 214, 255, 0.601);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#logo {
+    height: 170px;
+    width: auto;
+}
+
+#logo-name {
+    position: relative;
+    right: 20px;
+    font-size: 60px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.stuff {
+    grid-row: 2 / 3;
+    display: grid;
+    grid-template-columns: auto 1fr;
+}
+
+.sidebar {
+    background-color:rgba(59, 177, 236, 0.601);
+    padding: 20px;
+}
+
+.projects {
+    display: flex;
+    align-items: center;
+    width: 125px;
+    border-radius: 6px;
+    margin-bottom: 1px;
+}
+
+#inbox-logo, #today-logo {
+    height: 40px;
+}
+
+#project-btn {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.content {
+    background-color: white;
+    padding-left: 50px;
+}
+
+.display-projects {
+    display: none;
+}
+
+#display-Inbox {
+    display: block;
+}
+
+.popup-form {
+    background-color: rgba(34, 133, 182, 0.601);
+    display: flex;
+    padding: 10px;
+    margin-bottom: 10px;
+    width: fit-content;
+}
+
+.popup-form-task {
+    background-color: rgb(220, 220, 220);
+    display: flex;
+    width: fit-content;
+    padding: 10px;
+}
+
+.project-form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.task-form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.submit-btn, .cancel-btn {
+    align-self: center;
+    padding: 5px 12px;
+}
+
+.submit-btn {
+    background-color: rgba(120, 240, 120, 0.8);
+}
+
+.cancel-btn {
+    background-color: rgba(247, 107, 107, 0.8);
+}
+
+.submit-btn:hover {
+    background-color: rgba(120, 240, 120, 1);
+}
+
+.cancel-btn:hover {
+    background-color: rgba(247, 107, 107, 1);
+}
+
+.popup-form, .popup-form-task {
+    display: none;
+}
