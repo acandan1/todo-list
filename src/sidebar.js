@@ -1,3 +1,5 @@
+/* eslint-disable no-inner-declarations */
+/* eslint-disable no-lonely-if */
 import  { projectArray, Project } from './project';
 import Task from './task';
 
@@ -80,16 +82,31 @@ function projectButton() {
         popupDiv.style.display = "none";
     }
 
+    function checkIfProjectExists(projectTitle) {
+        for (let i = 0; i < projectArray.length; i++) {
+            if (projectArray[i].getName() === projectTitle) {
+                return true;
+            }
+        }
+        return false;
+    } 
+
     const submitButton = document.createElement("button");
     submitButton.innerHTML = "Create"
     submitButton.type = "submit"
     submitButton.className = "submit-btn";
     submitButton.addEventListener('click', (event) => {
         event.preventDefault();
-        if (document.getElementById("project-name").value !== "") {
-            createProject(document.getElementById("project-name").value);
-            document.getElementById("project-name").value = "";
-            closeForm();
+        if (checkIfProjectExists(input.value)) {
+            alert("A project with this name already exists!");
+        } else {
+            if (document.getElementById("project-name").value !== "") {
+                createProject(document.getElementById("project-name").value);
+                document.getElementById("project-name").value = "";
+                closeForm();
+            } else {
+                alert("Please give the project a name!");
+            }
         }
     });
 
@@ -113,7 +130,12 @@ function projectButton() {
 function projectsEventListener(project) {
     if (project) {
         const ourProject = document.getElementById(project.getName());
+        const allProjects = document.getElementsByClassName("projects");
         ourProject.addEventListener('click', (event) => {
+            for (let i = 0; i < allProjects.length; i++) {
+                allProjects[i].style.backgroundColor = "coral";
+            }
+            ourProject.style.backgroundColor = "yellow";
             displayProject(project.getName());
         });
     }
@@ -166,17 +188,28 @@ function listProjectsContent(project) {
         label3.setAttribute("for", "task-date");
         label3.innerHTML = "Task Date: ";
         const input3 = document.createElement("input");
-        input3.type = "text";
+        input3.type = "date";
         input3.name = "task-date";
         input3.id = "task-date";
 
         const label4 = document.createElement("label");
         label4.setAttribute("for", "task-priority");
-        label4.innerHTML = "Task Priority: ";
+        label4.innerHTML = "Priority Level: ";
         const input4 = document.createElement("input");
-        input4.type = "text";
+        input4.setAttribute('list', 'priorities');
         input4.name = "task-priority";
         input4.id = "task-priority";
+        const datalist = document.createElement("datalist");
+        datalist.id = "priorities";
+        const option1 = document.createElement("option");
+        option1.value = "Top priority!";
+        const option2 = document.createElement("option");
+        option2.value = "Important!";
+        const option3 = document.createElement("option");
+        option3.value = "Can wait";
+        datalist.appendChild(option1);
+        datalist.appendChild(option2);
+        datalist.appendChild(option3);
 
         form.appendChild(title);
         form.appendChild(label);
@@ -187,21 +220,38 @@ function listProjectsContent(project) {
         form.appendChild(input3);
         form.appendChild(label4);
         form.appendChild(input4);
+        form.appendChild(datalist);
 
         const submitButton = document.createElement("button");
         submitButton.innerHTML = "Create";
         submitButton.type = "submit";
         submitButton.className = "submit-btn";
 
+        function checkIfTaskExists(taskTitle) {
+            const ourTaskArray = project.getTaskArray();
+            for (let i = 0; i < ourTaskArray.length; i++) {
+                if (ourTaskArray[i].getName() === taskTitle) {
+                    return true;
+                }
+            }
+            return false;
+        } 
+
         submitButton.addEventListener('click', (event) => {
             event.preventDefault();
-            if (input.value !== "") {
-                createTask(project, input.value, input2.value, input3.value, input4.value);
-                input.value = "";
-                input2.value = "";
-                input3.value = "";
-                input4.value = "";
-                popupDivTask.style.display = "none";
+            if (checkIfTaskExists(input.value)) {
+                alert("A task with this name already exists!");
+            } else {
+                if (input.value !== "") {
+                    createTask(project, input.value, input2.value, input3.value, input4.value);
+                    input.value = "";
+                    input2.value = "";
+                    input3.value = "";
+                    input4.value = "";
+                    popupDivTask.style.display = "none";
+                } else {
+                    alert("Please give the task a name!");
+                }
             }
         });
 
@@ -223,6 +273,10 @@ function listProjectsContent(project) {
         form.appendChild(cancelButton);
         popupDivTask.appendChild(form);
         div.appendChild(popupDivTask);
+
+        const taskDiv = document.createElement("div");
+        taskDiv.className = "task-cards";
+        div.appendChild(taskDiv);
     }
 }
 
@@ -239,17 +293,44 @@ function createTask(project, taskName, taskDescription, taskDate, taskPriority) 
 function updateProjectsContent(project) {
     const projectArr = project.getTaskArray();
     const projectDiv = document.getElementById("display-" + project.getName());
+    const taskCards = projectDiv.querySelector(".task-cards");
 
     const ourTasks = document.getElementsByClassName(project.getName() + "-tasks");
-    while (ourTasks.length > 0) {
-        ourTasks[0].parentNode.removeChild(ourTasks[0]);
-    }
 
     for (let i = 0; i < projectArr.length; i++) {
+        const idCheck = document.getElementById(projectArr[i].getName());
+        if (idCheck) {
+            continue;
+        }
         const div = document.createElement("div");
+        div.id = projectArr[i].getName();
         div.className = project.getName() + "-tasks";
-        div.innerHTML = projectArr[i].getName();
-        projectDiv.appendChild(div);
+
+        const cardName = document.createElement("h3");
+        cardName.innerHTML = projectArr[i].getName();
+        div.appendChild(cardName);
+
+        const cardDescription = document.createElement("p");
+        cardDescription.innerHTML = projectArr[i].getDescription();
+        div.appendChild(cardDescription);
+
+        const cardDate = document.createElement("h3");
+        cardDate.innerHTML = projectArr[i].getDueDate();
+        div.appendChild(cardDate);
+
+        const cardPriority = document.createElement("h3");
+        cardPriority.innerHTML = projectArr[i].getPriorityLevel();
+        div.appendChild(cardPriority);
+
+        const remove = document.createElement("button");
+        remove.innerHTML = "Remove";
+        remove.addEventListener('click', (event) => {
+            taskCards.removeChild(div);
+            project.removeFromArray(projectArr[i].getName());
+        });
+        div.appendChild(remove);
+
+        taskCards.appendChild(div);
     }
 }
 

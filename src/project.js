@@ -18,4 +18,12 @@ export class Project {
     pushToArray(task) {
         this.taskArray.push(task);
     }
+
+    removeFromArray(taskName) {
+        for (let i = 0; i < this.taskArray.length; i++) {
+            if (this.taskArray[i].getName() === taskName) {
+                this.taskArray.splice(i, 1);
+            }
+        }
+    }
 }
